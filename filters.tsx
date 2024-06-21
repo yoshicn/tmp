@@ -5,10 +5,11 @@ import { TargetSelector } from '../types';
 import AntForm from '../../../../../nirmata-lego/components/form';
 import { FormInstance, FormListFieldData } from 'antd';
 import { useGetClusterOptions } from '../utils/useGetClusterOptions';
-import { TFilterOptions, TformTargetSelctors } from '../utils';
+import { TformTargetSelctors, removeDuplicates } from '../utils';
+import { useGetNamespacesCache } from '../../../../recoil/globalCache';
+import { useMemo } from 'react';
 
 type FilterRowProps = {
-  namespaceFilterOptions: TFilterOptions[];
   field: FormListFieldData;
   handleAddRow: () => void;
   handleRemoveRow: (index: number | number[]) => void;
@@ -16,10 +17,21 @@ type FilterRowProps = {
   form?: FormInstance<any>;
 };
 
-export const FilterRow = ({ field, namespaceFilterOptions, handleRemoveRow, handleAddRow, form }: FilterRowProps) => {
+export const FilterRow = ({ field, handleRemoveRow, handleAddRow, form }: FilterRowProps) => {
   const { key, name, ...restfield } = field;
-  const { clusterFilterOptions, getClusterList } = useGetClusterOptions(namespaceFilterOptions?.[0]?.label);
+  const namespaceCache = useGetNamespacesCache();
   const { targetSelectors } = form?.getFieldsValue();
+  const typedTargetSelectors = targetSelectors as TformTargetSelctors[];
+  const namespaceFilterOptions = useMemo(
+    () =>
+      removeDuplicates(
+        namespaceCache
+          ?.filter((item) => !typedTargetSelectors?.map((name) => name?.namespace)?.includes(item?.name ?? ''))
+          ?.map((v) => ({ label: v?.name ?? '', value: v?.name ?? '' })) ?? []
+      ),
+    [namespaceCache, typedTargetSelectors]
+  );
+  const { clusterFilterOptions, getClusterList } = useGetClusterOptions(namespaceFilterOptions?.[0]?.label);
 
   return (
     <div key={key}>
@@ -75,7 +87,7 @@ export const FilterRow = ({ field, namespaceFilterOptions, handleRemoveRow, hand
             }}
             icon={<PlusOutlined style={{ width: '10px', height: '10px' }} />}
           />
-          {(targetSelectors as TformTargetSelctors[]).length > 1 && (
+          {((targetSelectors as TformTargetSelctors[])?.length ?? 0) > 1 && (
             <Button
               shape='circle'
               onClick={() => handleRemoveRow(name)}
