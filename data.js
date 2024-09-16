@@ -1,7 +1,7 @@
 export const fetchRepos = () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve([
+      resolve(new Response(JSON.stringify([
         {
             "id": "3ec2e64e-57d0-4a8d-ba84-5413c95f6d58",
             "service": "Policies",
@@ -33,7 +33,7 @@ export const fetchRepos = () => {
             "alarms": [],
             "name": "springboot_example2",
             "description": null,
-            "gitUrl": "https://github.com/nirmata/springboot_example2",
+            "gitUrl": "https://github.com/dtoledo/springboot_example2",
             "organization": "dtoledo",
             "gitAccount": null,
             "origin": null,
@@ -166,10 +166,16 @@ export const fetchRepos = () => {
                     "service": "Policies",
                     "modelIndex": "AccessControlList",
                     "uri": "/policies/api/accesscontrollists/07ad5909-6889-4058-93ec-9979095e9317"
+                },
+                {
+                    "id": "1e63acda-7f3b-4dc4-a30a-ee98947d1d92",
+                    "service": "Policies",
+                    "modelIndex": "AccessControlList",
+                    "uri": "/policies/api/accesscontrollists/1e63acda-7f3b-4dc4-a30a-ee98947d1d92"
                 }
             ]
         }
-    ])
+    ])))
     }, 1000);
   })
 }
@@ -178,10 +184,10 @@ export const fetchAccessControls = (input: string[] = []) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (input?.length === 0) {
-        resolve([])
+        resolve(new Response(JSON.stringify([])))
       }
       else {
-        resolve([
+        resolve(new Response(JSON.stringify([
           {
               "id": "07ad5909-6889-4058-93ec-9979095e9317",
               "accessControls": [
@@ -219,7 +225,7 @@ export const fetchAccessControls = (input: string[] = []) => {
               "id": "e3853d19-d6aa-4402-9f1f-4d7943a9567a",
               "accessControls": []
           }
-      ])
+      ])))
     }
     }, 1000);
   })
@@ -229,10 +235,10 @@ export const fetchScanDetails = (input: string[] = []) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (input?.length === 0) {
-        resolve([])
+        resolve(new Response(JSON.stringify([])))
       }
       else {
-        resolve({
+        resolve(new Response(JSON.stringify({
           "entries" : [ {
             "_id" : "https://bitbucket.org/nirmata/test-nctl",
             "lastScan" : 1717847420554,
@@ -259,7 +265,7 @@ export const fetchScanDetails = (input: string[] = []) => {
             "files" : 13
           } ],
           "total" : 4
-        })
+        })))
     }
     }, 1000);
   })
